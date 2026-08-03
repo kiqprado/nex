@@ -1,0 +1,1 @@
+export type WorkOutActivityState = 'idle'| 'running' | 'paused'

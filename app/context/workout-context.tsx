@@ -1,0 +1,186 @@
+'use client'
+
+import { createContext, useState, useContext, useEffect, useMemo, useCallback, type ReactNode } from "react"
+
+import { CreateInitialWorkoutActivity, WorkoutActivity } from "../types/workout-activity"
+import { WorkOutActivityState } from "../types/workout-state"
+import { WorkoutRunTime } from "../types/workout-runtime"
+
+import { UserLocation } from "../hooks/use-User-Location"
+import { WorkOutTimer } from "../hooks/use-Workout-Timer"
+
+import { IsValidPosition } from "../utils/location-setup/is-valid-position"
+import { CalculateDistance } from "../utils/location-setup/calculate-distance"
+import { CalculateElevate } from "../utils/location-setup/calculate-elevate"
+import { CalculateSpeed } from "../utils/workout-setup/calculate-speed"
+import { CalculatePace } from "../utils/workout-setup/calculate-pace"
+
+
+interface IWorkOutContextData {
+  activity: WorkoutActivity
+  workoutState: WorkOutActivityState
+  elapsedSeconds: number
+
+  runtime: WorkoutRunTime
+
+  StartWorkout(): void
+  PauseWorkout(): void
+  ResumeWorkout(): void
+  FinishWorkout(): void
+  ResetWorkout(): void
+}
+
+export const WorkoutContext = createContext({} as IWorkOutContextData)
+
+interface WorkoutProviderProps {
+  children: ReactNode
+}
+
+export function WorkOutProvider({children}: WorkoutProviderProps){
+  const { position, StartTracking, StopTracking } = UserLocation()
+  const [ activity, setActivity ] = useState(CreateInitialWorkoutActivity())
+  const [ workoutState, setWorkoutState ] =  useState<WorkOutActivityState>('idle')
+  const [ runtime, setRuntime ] = useState<WorkoutRunTime>({currentSpeed: 0, currentPace: 0})
+  const { elapsedSeconds, ResetTimer} = WorkOutTimer(workoutState)
+
+  // GPS
+  useEffect(() => {
+    StartTracking()
+
+    return () => StopTracking()
+  }, [StartTracking, StopTracking])
+
+  // PATH GPS PROCESS
+  useEffect(() => {
+    if(workoutState !== 'running') return
+    if(!position) return 
+    if(!IsValidPosition(position)) return
+
+    setActivity(prev => {
+      const lastPosition = prev.path.at(-1)
+
+      if(!lastPosition) {
+        return {
+          ...prev,
+          path: [position]
+        }
+      }
+
+      if(lastPosition.latitude === position.latitude &&
+        lastPosition.longitude === position.longitude) {
+          return prev
+      }
+
+      const SegmentDistance = CalculateDistance(lastPosition, position)
+      const SegmentDuration = (position.timestamp - lastPosition.timestamp) / 1000
+      if(SegmentDuration <= 0) {
+        return prev
+      }
+
+      const CurrentSpeed = CalculateSpeed(SegmentDistance, SegmentDuration)
+      const CurrentPace = CalculatePace(SegmentDistance, SegmentDuration)
+      const ElevationGain = CalculateElevate(lastPosition, position)
+
+      const TotalDistance = prev.distance + SegmentDistance
+      const TotalDuration = (position.timestamp - prev.path[0].timestamp) / 1000
+
+      const AverageSpeed = CalculateSpeed(TotalDistance, TotalDuration)
+      const AveragePace = CalculatePace(TotalDistance, TotalDuration)
+
+      setRuntime({
+        currentPace: CurrentPace,
+        currentSpeed: CurrentSpeed
+      })
+
+      return {
+        ...prev,
+        path: [...prev.path, position],
+        distance: TotalDistance,
+        averageSpeed: AverageSpeed,
+        averagePace: AveragePace,
+        elevationGain: prev.elevationGain + ElevationGain,
+        maxSpeed: Math.max(prev.maxSpeed, CurrentSpeed),
+        minSpeed: prev.minSpeed === 0 ? CurrentSpeed : Math.min(prev.minSpeed, CurrentSpeed)
+      }
+
+    })
+  }, [position, workoutState])
+
+  const StartWorkout = useCallback(() => {
+    if(!position) return
+    if(!IsValidPosition(position)) return
+
+    setWorkoutState('running')
+
+    setRuntime({
+     currentPace: 0,
+     currentSpeed: 0
+    })
+
+    setActivity(prev => ({
+      ...prev,
+      startedAt: new Date(),
+      finishedAt: null,
+      path: [position],
+
+      distance: 0,
+      duration: 0,
+      elevationGain: 0,
+
+      averagePace: 0,
+      averageSpeed: 0,
+
+      maxSpeed: 0,
+      minSpeed: 0,
+
+      calories: 0,
+      steps: 0
+    })) 
+  }, [position])
+
+  const PauseWorkout = useCallback(() => {
+    setWorkoutState('paused')
+  },[])
+
+  const ResumeWorkout = useCallback(() => {
+    setWorkoutState('running')
+  },[])
+
+  const FinishWorkout = useCallback(() =>  {
+    setWorkoutState('paused')
+
+    setActivity(prev => ({
+      ...prev,
+      finishedAt: new Date()
+    }))
+  },[])
+
+  const ResetWorkout = useCallback(() =>  {
+    setWorkoutState('idle')
+ 
+    ResetTimer()
+
+    setRuntime({
+      currentSpeed: 0,
+      currentPace: 0,
+    })
+
+    setActivity(CreateInitialWorkoutActivity())
+  }, [ResetTimer])
+
+  const value = useMemo(() => ({
+    activity, workoutState, elapsedSeconds, runtime,
+    StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout
+  }),[activity, workoutState, elapsedSeconds, runtime,
+    StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout])
+
+  return(
+    <WorkoutContext.Provider value = {value}>
+      {children}
+    </WorkoutContext.Provider>
+  )
+}
+
+export function UseWorkOut() {
+  return useContext(WorkoutContext)
+}

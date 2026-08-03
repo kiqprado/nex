@@ -1,0 +1,41 @@
+import { CurrentPosition } from "./location"
+
+export interface WorkoutActivity {
+  startedAt:  Date | null
+  finishedAt: Date | null
+
+  duration: number
+  distance: number
+
+  averagePace: number
+  averageSpeed: number
+  maxSpeed: number
+  minSpeed: number
+
+  calories: number
+  elevationGain: number
+  steps: number
+
+  path: CurrentPosition[]
+}
+
+export function CreateInitialWorkoutActivity(): WorkoutActivity {
+  return {
+    startedAt: null,
+    finishedAt: null,
+
+    duration: 0,
+    distance: 0,
+
+    averagePace: 0,
+    averageSpeed: 0,
+    maxSpeed: 0,
+    minSpeed: 0,
+
+    calories: 0,
+    elevationGain: 0,
+    steps: 0,
+
+    path: []
+  }
+}
