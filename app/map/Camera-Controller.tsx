@@ -1,23 +1,20 @@
 'use client'
 
 import { useEffect, useRef } from "react"
-
+import { useWorkout } from "../hooks/use-Workout"
 import { MapRef } from "react-map-gl/maplibre"
-
-import { CurrentPosition } from "../types/location"
 
 interface ICameraController {
   mapRef: React.RefObject<MapRef | null>
-  position: CurrentPosition | null
 }
 
-export function CameraController({ mapRef, position}: ICameraController) {
+export function CameraController({ mapRef}: ICameraController) {
+  const { position } = useWorkout()
   const hasPointCentered = useRef(false)
 
   useEffect(() => {
     if(!position) return
     if(!mapRef.current) return
-
     if(hasPointCentered.current) return
 
     mapRef.current.flyTo({

@@ -1,13 +1,11 @@
 'use client'
 
 import { useMemo } from "react"
-
+import { useWorkout } from "../hooks/use-Workout"
 import { Layer, Source } from "react-map-gl/maplibre"
 
-import { UseWorkOut } from "../context/workout-context"
-
 export function WorkOutPath() {
-  const { activity } = UseWorkOut()
+  const { activity } = useWorkout()
 
   const routeGeoJson = useMemo(() => {
     return {

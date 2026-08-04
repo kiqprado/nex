@@ -1,12 +1,10 @@
 'use client'
 
+import { useWorkout } from "../hooks/use-Workout"
 import { Marker } from "react-map-gl/maplibre"
 
-import { UseWorkOut } from "../context/workout-context"
-
 export function UserMarker() {
-  const { position } = UseWorkOut()
-  
+  const { position } = useWorkout()
   if(!position) return
 
   return(
@@ -22,7 +20,7 @@ export function UserMarker() {
             bg-cyan-400/20 animate-ping"
         />
         <div
-          className="relativeh-8 w-8
+          className="relative h-8 w-8
             rounded-full border-4 border-white
             bg-gradient-to-br
             from-cyan-700

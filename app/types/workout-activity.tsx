@@ -1,4 +1,5 @@
 import { CurrentPosition } from "./location"
+import { WorkoutCategory } from "./workout-category"
 
 export interface WorkoutActivity {
   startedAt:  Date | null
@@ -17,6 +18,7 @@ export interface WorkoutActivity {
   steps: number
 
   path: CurrentPosition[]
+  category: WorkoutCategory | null
 }
 
 export function CreateInitialWorkoutActivity(): WorkoutActivity {
@@ -36,6 +38,7 @@ export function CreateInitialWorkoutActivity(): WorkoutActivity {
     elevationGain: 0,
     steps: 0,
 
-    path: []
+    path: [],
+    category: null
   }
 }

@@ -1,4 +1,3 @@
-
 export function CalculatePace(distanceInMeters: number, durationInSeconds: number): number {
   if(distanceInMeters <= 0 || durationInSeconds <= 0) {
     return 0

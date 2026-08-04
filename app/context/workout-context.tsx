@@ -1,10 +1,12 @@
 'use client'
 
-import { createContext, useState, useContext, useEffect, useMemo, useCallback, type ReactNode } from "react"
+import { createContext, useState, useEffect, useMemo, useCallback, type ReactNode } from "react"
 
 import { CreateInitialWorkoutActivity, WorkoutActivity } from "../types/workout-activity"
 import { WorkOutActivityState } from "../types/workout-state"
 import { WorkoutRunTime } from "../types/workout-runtime"
+import { WorkoutCategory } from "../types/workout-category"
+import { CurrentPosition } from "../types/location"
 
 import { UserLocation } from "../hooks/use-User-Location"
 import { WorkOutTimer } from "../hooks/use-Workout-Timer"
@@ -15,14 +17,14 @@ import { CalculateElevate } from "../utils/location-setup/calculate-elevate"
 import { CalculateSpeed } from "../utils/workout-setup/calculate-speed"
 import { CalculatePace } from "../utils/workout-setup/calculate-pace"
 
-
 interface IWorkOutContextData {
   activity: WorkoutActivity
   workoutState: WorkOutActivityState
   elapsedSeconds: number
-
   runtime: WorkoutRunTime
+  position: CurrentPosition | null
 
+  SetWorkoutCategory(category: WorkoutCategory): void
   StartWorkout(): void
   PauseWorkout(): void
   ResumeWorkout(): void
@@ -30,7 +32,7 @@ interface IWorkOutContextData {
   ResetWorkout(): void
 }
 
-export const WorkoutContext = createContext({} as IWorkOutContextData)
+export const WorkoutContext = createContext<IWorkOutContextData | null>(null)
 
 interface WorkoutProviderProps {
   children: ReactNode
@@ -106,9 +108,19 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     })
   }, [position, workoutState])
 
+  const SetWorkoutCategory = useCallback((category: WorkoutCategory) => {
+    if(workoutState !== 'idle') return
+
+    setActivity(prev => ({
+      ...prev,
+      category
+    }))
+  }, [workoutState])
+
   const StartWorkout = useCallback(() => {
     if(!position) return
     if(!IsValidPosition(position)) return
+    if(!activity.category) return
 
     setWorkoutState('running')
 
@@ -136,7 +148,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
       calories: 0,
       steps: 0
     })) 
-  }, [position])
+  }, [position, activity.category])
 
   const PauseWorkout = useCallback(() => {
     setWorkoutState('paused')
@@ -147,7 +159,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
   },[])
 
   const FinishWorkout = useCallback(() =>  {
-    setWorkoutState('paused')
+    setWorkoutState('finished')
 
     setActivity(prev => ({
       ...prev,
@@ -169,18 +181,14 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
   }, [ResetTimer])
 
   const value = useMemo(() => ({
-    activity, workoutState, elapsedSeconds, runtime,
-    StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout
-  }),[activity, workoutState, elapsedSeconds, runtime,
-    StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout])
+    activity, workoutState, elapsedSeconds, runtime, position, 
+    SetWorkoutCategory, StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout
+  }),[activity, workoutState, elapsedSeconds, runtime, position,
+     SetWorkoutCategory, StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout])
 
   return(
     <WorkoutContext.Provider value = {value}>
       {children}
     </WorkoutContext.Provider>
   )
-}
-
-export function UseWorkOut() {
-  return useContext(WorkoutContext)
 }

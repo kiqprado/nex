@@ -3,8 +3,6 @@
 import Map, {MapRef } from 'react-map-gl/maplibre'
 import maplibregl from 'maplibre-gl'
 
-import { CurrentPosition } from '../types/location'
-
 import { UserMarker } from './User-Marker'
 import { WorkOutPath } from './WorkOut-Path'
 import { CameraController } from './Camera-Controller'
@@ -13,11 +11,9 @@ import { InitialMapView } from '../utils/initial-map-view'
 
 interface IMyMap {
   mapRef: React.RefObject<MapRef | null>
-  position: CurrentPosition | null
 }
 
-export function MyMap({ mapRef, position} : IMyMap) {
-
+export function MyMap({ mapRef} : IMyMap) {
   return(
      <Map
       ref={mapRef}
@@ -31,7 +27,6 @@ export function MyMap({ mapRef, position} : IMyMap) {
     >
       <CameraController
         mapRef={mapRef}
-        position={position}
       />
       <UserMarker/>
       <WorkOutPath/>

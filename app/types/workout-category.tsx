@@ -1,0 +1,1 @@
+export type WorkoutCategory = 'running' | 'walking' | 'hiking'
