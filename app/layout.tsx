@@ -4,16 +4,12 @@ import { WorkOutProvider } from '@/app/context/workout-context'
 
 import "./styles/globals.css";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Orbitron, Gruppo  } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +25,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} 
+      className={`${orbitron.variable} font-orbitron
         bg-zinc-950 text-zinc-100 h-full antialiased`}
     >
       <body 

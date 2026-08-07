@@ -6,26 +6,26 @@ import { useWorkout } from './hooks/use-Workout';
 import { MyMap } from '@/app/map/My-Map'
 import { MapRef } from 'react-map-gl/maplibre'
 
-import { WorkOutBar } from './components/workout-bar'
-import { WorkOutStats  } from './components/workout-stats';
-import { WorkOutActivityCheckListModal } from './components/workout-activity-checklist-modal';
+import { WorkoutSettingsBar } from './components/workout-settings-bar'
+import { WorkoutStatsBar  } from './components/workout-stats-bar';
+import { WorkoutSummaryModal } from './components/workout-summary-modal';
+import { ButtonBackToMe } from '@/app/elements/button-back-to-me'
 
 export default function App() {
   const mapRef = useRef<MapRef>(null)
-  const [ workoutStatsModal, setWorkoutStatsModal ] = useState(false)
+  const [ workoutSummaryModal, setWorkoutSummaryModal ] = useState(false)
   const { activity, workoutState, elapsedSeconds, runtime,
-    StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout
+    StartWorkout, PauseWorkout, ResumeWorkout
   } = useWorkout()
 
-  function HandleToggleWorkoutStatsModal() {
-    setWorkoutStatsModal(prev => !prev)
+  function HandleToggleWorkoutSummaryModal() {
+    setWorkoutSummaryModal(prev => !prev)
   }
 
-  function HandleFinishWorkout() {
-    FinishWorkout()
-    setWorkoutStatsModal(true)
+  function HandleOnStopWorkout() {
+    PauseWorkout()
+    HandleToggleWorkoutSummaryModal()
   }
-
 
   return (
     <main className="h-svh w-full relative">
@@ -40,25 +40,25 @@ export default function App() {
         />
       </div>
 
-      <WorkOutStats
+      <WorkoutStatsBar
         activity={activity}
         runtime={runtime}
         elapsedTimer={elapsedSeconds}
       />
 
-      <WorkOutBar
+      <WorkoutSettingsBar
         workoutState={workoutState}
         StartWorkout={StartWorkout}
         PauseWorkout={PauseWorkout}
         ResumeWorkout={ResumeWorkout}
-        FinishWorkout={HandleFinishWorkout}
+        OnStopWorkout={HandleOnStopWorkout}
       />
 
-      {workoutStatsModal && (
-        <WorkOutActivityCheckListModal
-          HandleToggleWorkoutStatsModal={HandleToggleWorkoutStatsModal}
-          setWorkoutState={setWorkoutState}
-          setElapsedTimer={setElapsedTimer}
+      <ButtonBackToMe/>
+
+      {workoutSummaryModal && (
+        <WorkoutSummaryModal
+          onCloseSummaryModal={HandleToggleWorkoutSummaryModal}
         />
       )}
     </main>

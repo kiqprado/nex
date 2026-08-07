@@ -12,6 +12,7 @@ import { UserLocation } from "../hooks/use-User-Location"
 import { WorkOutTimer } from "../hooks/use-Workout-Timer"
 
 import { IsValidPosition } from "../utils/location-setup/is-valid-position"
+import { IsTrackablePosition } from "../utils/location-setup/is-trackable-position"
 import { CalculateDistance } from "../utils/location-setup/calculate-distance"
 import { CalculateElevate } from "../utils/location-setup/calculate-elevate"
 import { CalculateSpeed } from "../utils/workout-setup/calculate-speed"
@@ -57,6 +58,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     if(workoutState !== 'running') return
     if(!position) return 
     if(!IsValidPosition(position)) return
+    if(!IsTrackablePosition(position)) return
 
     setActivity(prev => {
       const lastPosition = prev.path.at(-1)
@@ -120,7 +122,12 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
   const StartWorkout = useCallback(() => {
     if(!position) return
     if(!IsValidPosition(position)) return
-    if(!activity.category) return
+    if(!activity.category) {
+      alert("Selecione uma categoria")
+      return
+    }
+
+    console.log("running")
 
     setWorkoutState('running')
 

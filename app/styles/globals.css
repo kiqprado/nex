@@ -1,4 +1,6 @@
 @import "tailwindcss";
-@import 'maplibre-gl/dist/maplibre-gl.css'
+@import 'maplibre-gl/dist/maplibre-gl.css';
 
-
+.font-orbitron {
+  font-family: var(--font-orbitron)
+}

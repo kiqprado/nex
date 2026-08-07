@@ -6,21 +6,21 @@ import { Button } from '../elements/button'
 import { ButtonCategory } from '../elements/button-category'
 import { PlayIcon, PauseIcon, StopIcon } from '@phosphor-icons/react'
 
-interface IWorkOutBar {
+interface IWorkoutSettingsBar {
   workoutState: WorkOutActivityState
   StartWorkout: () => void
   PauseWorkout: () => void
   ResumeWorkout: () => void
-  FinishWorkout: () =>  void
+  OnStopWorkout: () =>  void
 }
 
-export function WorkOutBar({ 
+export function WorkoutSettingsBar({ 
   workoutState,
   StartWorkout,
   PauseWorkout,
   ResumeWorkout,
-  FinishWorkout
-}: IWorkOutBar) {
+  OnStopWorkout
+}: IWorkoutSettingsBar) {
   
   function HandleWorkoutToggleState() {
     if( workoutState === 'idle') {
@@ -37,7 +37,7 @@ export function WorkOutBar({
   }
 
   function HandleStopWorkout() {
-    FinishWorkout()
+    OnStopWorkout()
   }
 
   return(

@@ -15,7 +15,7 @@ import Walk_female from '@/public/avatar_sports/female_walk.svg'
 import Hike_male from '@/public/avatar_sports/male_hike.svg'
 import Hike_female from '@/public/avatar_sports/female_hike.svg'
 
-const isMale =  false
+const isMale =  true
 
 const categories: {id: WorkoutCategory, title: string, image: StaticImageData}[] = [
   {
