@@ -17,25 +17,39 @@ interface IWorkoutStatsBar {
 
 export function WorkoutStatsBar({activity, runtime, elapsedTimer}: IWorkoutStatsBar) {
   return(
-    <div 
-      className="absolute bottom-[18%] left-1/2 -translate-x-1/2
-      w-[96%] flex flex-col justify-between rounded-lg bg-zinc-900 px-6 py-2"
-    >
-     <div className="flex items-baseline justify-between">
-        <span className="text-lg tabular-nums">{FormattedPace(runtime.currentPace)}</span>
-        <span 
-          className="text-3xl tabular-nums"
-        >
-          {FormattedDistance(activity.distance)}
-          <small className="text-xs ml-0.5">km</small>
+  <div
+    className="absolute bottom-[18%] left-1/2 -translate-x-1/2
+    w-[96%] rounded-lg bg-zinc-900 px-6 py-2"
+  >
+    <div className="flex w-full gap-8 items-baseline">
+      <div className="w-1/3 flex flex-col items-center">
+        <span className="text-lg tabular-nums tracking-widest">
+          {FormattedPace(runtime.currentPace)}
         </span>
-        <span className="text-lg tabular-nums">{FormattedElapsedTimer(elapsedTimer)}</span>
+        <h5 className="text-zinc-400 tracking-widest text-sm font-black">
+          Ritmo
+        </h5>
       </div>
-      <div className="flex items-center justify-between">
-        <h5 className="text-zinc-400 tracking-widest text-sm font-black">Ritmo</h5>
-        <h5 className="text-zinc-400 tracking-widest text-sm font-black">Distância</h5>
-        <h5 className="text-zinc-400 tracking-widest text-sm font-black">Tempo</h5>
+
+      <div className="w-1/3 flex flex-col items-center">
+        <span className="text-3xl tabular-nums tracking-wide">
+          {FormattedDistance(activity.distance)}
+          <small className="ml-0.5 text-xs">km</small>
+        </span>
+        <h5 className="text-zinc-400 tracking-widest text-sm font-black">
+          Distância
+        </h5>
+      </div>
+
+      <div className="w-1/3 flex flex-col items-center">
+        <span className="text-lg tabular-nums tracking-widest">
+          {FormattedElapsedTimer(elapsedTimer)}
+        </span>
+        <h5 className="text-zinc-400 tracking-widest text-sm font-black">
+          Tempo
+        </h5>
       </div>
     </div>
+  </div>
   )
 }

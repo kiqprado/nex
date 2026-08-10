@@ -14,7 +14,7 @@ import { ButtonBackToMe } from '@/app/elements/button-back-to-me'
 export default function App() {
   const mapRef = useRef<MapRef>(null)
   const [ workoutSummaryModal, setWorkoutSummaryModal ] = useState(false)
-  const { activity, workoutState, elapsedSeconds, runtime,
+  const { activity, workoutState, elapsedSeconds, runtime, position,
     StartWorkout, PauseWorkout, ResumeWorkout
   } = useWorkout()
 
@@ -25,6 +25,20 @@ export default function App() {
   function HandleOnStopWorkout() {
     PauseWorkout()
     HandleToggleWorkoutSummaryModal()
+  }
+
+  function HandleOnBackToMe() {
+    if(!position)  return
+    if(!mapRef.current) return
+
+    mapRef.current.flyTo({
+      center: [
+        position.longitude,
+        position.latitude
+      ],
+      zoom: 17,
+      duration: 800
+    })
   }
 
   return (
@@ -54,7 +68,9 @@ export default function App() {
         OnStopWorkout={HandleOnStopWorkout}
       />
 
-      <ButtonBackToMe/>
+      <ButtonBackToMe
+        OnBackToMe={HandleOnBackToMe}
+      />
 
       {workoutSummaryModal && (
         <WorkoutSummaryModal

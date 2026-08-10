@@ -2,9 +2,15 @@
 
 import { ArrowsInCardinalIcon } from '@phosphor-icons/react'
 
-export function ButtonBackToMe(){
+interface IButtonBackToMe {
+  OnBackToMe: () => void
+}
+
+export function ButtonBackToMe({ OnBackToMe}: IButtonBackToMe){
+
   return(
     <button
+      onClick={OnBackToMe}
       title='Voltar a minha posição.'
       className="group absolute right-3 bottom-[33%]
       flex h-12 w-12 items-center justify-center
