@@ -14,16 +14,16 @@ import { ButtonBackToMe } from '@/app/elements/button-back-to-me'
 export default function App() {
   const mapRef = useRef<MapRef>(null)
   const [ workoutSummaryModal, setWorkoutSummaryModal ] = useState(false)
-  const { activity, workoutState, elapsedSeconds, runtime, position,
-    StartWorkout, PauseWorkout, ResumeWorkout
+  const { activity, workoutState, activeSeconds, elapsedSeconds, runtime, position,
+    StartWorkout, PauseWorkout, StopWorkout, ResumeWorkout
   } = useWorkout()
 
   function HandleToggleWorkoutSummaryModal() {
     setWorkoutSummaryModal(prev => !prev)
   }
 
-  function HandleOnStopWorkout() {
-    PauseWorkout()
+  function HandleStopWorkout() {
+    StopWorkout()
     HandleToggleWorkoutSummaryModal()
   }
 
@@ -57,7 +57,7 @@ export default function App() {
       <WorkoutStatsBar
         activity={activity}
         runtime={runtime}
-        elapsedTimer={elapsedSeconds}
+        activeTimer={activeSeconds}
       />
 
       <WorkoutSettingsBar
@@ -65,7 +65,7 @@ export default function App() {
         StartWorkout={StartWorkout}
         PauseWorkout={PauseWorkout}
         ResumeWorkout={ResumeWorkout}
-        OnStopWorkout={HandleOnStopWorkout}
+        OnStopWorkout={HandleStopWorkout}
       />
 
       <ButtonBackToMe

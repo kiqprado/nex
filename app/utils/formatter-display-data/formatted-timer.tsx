@@ -1,4 +1,4 @@
-export function FormattedElapsedTimer(timer: number) {
+export function FormattedTimer(timer: number) {
   const hours = Math.floor(timer / 3600)
   const minutes = Math.floor((timer % 3600) / 60)
   const seconds = Math.floor(timer % 60)

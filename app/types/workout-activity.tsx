@@ -5,10 +5,12 @@ export interface WorkoutActivity {
   startedAt:  Date | null
   finishedAt: Date | null
 
-  duration: number
+  totalDuration: number
+  activeDuration: number
   distance: number
 
   averagePace: number
+  averageActivePace: number
   averageSpeed: number
   maxSpeed: number
   minSpeed: number
@@ -26,10 +28,12 @@ export function CreateInitialWorkoutActivity(): WorkoutActivity {
     startedAt: null,
     finishedAt: null,
 
-    duration: 0,
+    totalDuration: 0,
+    activeDuration: 0,
     distance: 0,
 
     averagePace: 0,
+    averageActivePace: 0,
     averageSpeed: 0,
     maxSpeed: 0,
     minSpeed: 0,

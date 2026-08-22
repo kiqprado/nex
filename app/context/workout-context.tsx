@@ -22,6 +22,7 @@ interface IWorkOutContextData {
   activity: WorkoutActivity
   workoutState: WorkOutActivityState
   elapsedSeconds: number
+  activeSeconds: number
   runtime: WorkoutRunTime
   position: CurrentPosition | null
 
@@ -29,6 +30,7 @@ interface IWorkOutContextData {
   StartWorkout(): void
   PauseWorkout(): void
   ResumeWorkout(): void
+  StopWorkout(): void
   FinishWorkout(): void
   ResetWorkout(): void
 }
@@ -44,7 +46,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
   const [ activity, setActivity ] = useState(CreateInitialWorkoutActivity())
   const [ workoutState, setWorkoutState ] =  useState<WorkOutActivityState>('idle')
   const [ runtime, setRuntime ] = useState<WorkoutRunTime>({currentSpeed: 0, currentPace: 0})
-  const { elapsedSeconds, ResetTimer} = WorkOutTimer(workoutState)
+  const { elapsedSeconds, activeSeconds, ResetTimer} = WorkOutTimer(workoutState)
 
   // GPS
   useEffect(() => {
@@ -86,10 +88,10 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
       const ElevationGain = CalculateElevate(lastPosition, position)
 
       const TotalDistance = prev.distance + SegmentDistance
-      const TotalDuration = (position.timestamp - prev.path[0].timestamp) / 1000
+      const TotalActiveDuration = prev.activeDuration + SegmentDuration
 
-      const AverageSpeed = CalculateSpeed(TotalDistance, TotalDuration)
-      const AveragePace = CalculatePace(TotalDistance, TotalDuration)
+      const AverageSpeed = CalculateSpeed(TotalDistance, TotalActiveDuration)
+      const AverageActivePace = CalculatePace(TotalDistance, TotalActiveDuration)
 
       setRuntime({
         currentPace: CurrentPace,
@@ -100,8 +102,9 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
         ...prev,
         path: [...prev.path, position],
         distance: TotalDistance,
+        activeDuration: TotalActiveDuration,
         averageSpeed: AverageSpeed,
-        averagePace: AveragePace,
+        averageActivePace: AverageActivePace,
         elevationGain: prev.elevationGain + ElevationGain,
         maxSpeed: Math.max(prev.maxSpeed, CurrentSpeed),
         minSpeed: prev.minSpeed === 0 ? CurrentSpeed : Math.min(prev.minSpeed, CurrentSpeed)
@@ -127,8 +130,6 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
       return
     }
 
-    console.log("running")
-
     setWorkoutState('running')
 
     setRuntime({
@@ -143,7 +144,8 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
       path: [position],
 
       distance: 0,
-      duration: 0,
+      totalDuration: 0,
+      activeDuration: 0,
       elevationGain: 0,
 
       averagePace: 0,
@@ -161,6 +163,10 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     setWorkoutState('paused')
   },[])
 
+  const StopWorkout = useCallback(() => {
+    setWorkoutState('stopped')
+  },[])
+
   const ResumeWorkout = useCallback(() => {
     setWorkoutState('running')
   },[])
@@ -168,11 +174,19 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
   const FinishWorkout = useCallback(() =>  {
     setWorkoutState('finished')
 
-    setActivity(prev => ({
-      ...prev,
-      finishedAt: new Date()
-    }))
-  },[])
+    setActivity(prev => {
+      const totalDuration = elapsedSeconds
+      const activeDuration = activeSeconds
+
+      return {
+        ...prev,
+        finishedAt: new Date(),
+        totalDuration,
+        activeDuration,
+        averagePace: CalculatePace(prev.distance, totalDuration)
+      }
+    })
+  },[elapsedSeconds, activeSeconds])
 
   const ResetWorkout = useCallback(() =>  {
     setWorkoutState('idle')
@@ -188,10 +202,11 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
   }, [ResetTimer])
 
   const value = useMemo(() => ({
-    activity, workoutState, elapsedSeconds, runtime, position, 
-    SetWorkoutCategory, StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout
-  }),[activity, workoutState, elapsedSeconds, runtime, position,
-     SetWorkoutCategory, StartWorkout, PauseWorkout, ResumeWorkout, FinishWorkout, ResetWorkout])
+    activity, workoutState, elapsedSeconds, activeSeconds, runtime, position, 
+    SetWorkoutCategory, StartWorkout, PauseWorkout, StopWorkout, ResumeWorkout, FinishWorkout, ResetWorkout
+  }),[activity, workoutState, elapsedSeconds, activeSeconds, runtime, position,
+     SetWorkoutCategory, StartWorkout, PauseWorkout, StopWorkout, ResumeWorkout, FinishWorkout, ResetWorkout
+  ])
 
   return(
     <WorkoutContext.Provider value = {value}>

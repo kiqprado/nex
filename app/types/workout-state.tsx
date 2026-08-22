@@ -1,1 +1,1 @@
-export type WorkOutActivityState = 'idle'| 'running' | 'paused' | 'finished'
+export type WorkOutActivityState = 'idle'| 'running' | 'paused' | 'stopped' | 'finished'

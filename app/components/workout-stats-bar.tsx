@@ -4,7 +4,7 @@ import { WorkoutRunTime } from "../types/workout-runtime"
 import { FormattedDistance } from "../utils/formatter-display-data/formatted-distance"
 import { FormattedPace } from "../utils/formatter-display-data/formatted-pace"
 import { FormattedSpeed } from "../utils/formatter-display-data/formatted-speed"
-import { FormattedElapsedTimer } from "../utils/formatter-display-data/formatted-elapsed-timer"
+import { FormattedTimer } from "../utils/formatter-display-data/formatted-timer"
 import { FormattedElevationGain } from "../utils/formatter-display-data/formatted-elevation-gain"
 import { FormattedStep } from "../utils/formatter-display-data/formatted-steps"
 
@@ -12,10 +12,10 @@ import { FormattedStep } from "../utils/formatter-display-data/formatted-steps"
 interface IWorkoutStatsBar {
   activity: WorkoutActivity
   runtime: WorkoutRunTime
-  elapsedTimer: number
+  activeTimer: number
 }
 
-export function WorkoutStatsBar({activity, runtime, elapsedTimer}: IWorkoutStatsBar) {
+export function WorkoutStatsBar({activity, runtime, activeTimer}: IWorkoutStatsBar) {
   return(
   <div
     className="absolute bottom-[18%] left-1/2 -translate-x-1/2
@@ -43,7 +43,7 @@ export function WorkoutStatsBar({activity, runtime, elapsedTimer}: IWorkoutStats
 
       <div className="w-1/3 flex flex-col items-center">
         <span className="text-lg tabular-nums tracking-widest">
-          {FormattedElapsedTimer(elapsedTimer)}
+          {FormattedTimer(activeTimer)}
         </span>
         <h5 className="text-zinc-400 tracking-widest text-sm font-black">
           Tempo
