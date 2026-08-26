@@ -165,7 +165,19 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
 
   const StopWorkout = useCallback(() => {
     setWorkoutState('stopped')
-  },[])
+
+    setActivity(prev => {
+      const totalDuration = elapsedSeconds
+      const activeDuration = activeSeconds
+
+      return {
+        ...prev,
+        totalDuration,
+        activeDuration,
+        averagePace: CalculatePace(prev.distance, totalDuration)
+      }
+    })
+  },[elapsedSeconds, activeSeconds])
 
   const ResumeWorkout = useCallback(() => {
     setWorkoutState('running')

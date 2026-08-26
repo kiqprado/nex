@@ -30,9 +30,9 @@ export function WorkoutSummaryModal({onCloseSummaryModal}: IWorkoutSummaryModal)
   return(
     <div className="h-svh w-full inset-0 absolute z-50 flex bg-zinc-950/50">
       <div 
-        className="m-auto w-[92%] min-h-[88%] px-6 py-4
-          flex flex-col justify-center gap-4
-         bg-zinc-800"
+        className="m-auto w-[88%] min-h-[88%] px-6 py-4
+          flex flex-col items-center gap-4
+         rounded-lg bg-zinc-800"
       >
 
         <div className='text-center space-y-2'>
