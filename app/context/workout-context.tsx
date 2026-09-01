@@ -17,6 +17,7 @@ import { CalculateDistance } from "../utils/location-setup/calculate-distance"
 import { CalculateElevate } from "../utils/location-setup/calculate-elevate"
 import { CalculateSpeed } from "../utils/workout-setup/calculate-speed"
 import { CalculatePace } from "../utils/workout-setup/calculate-pace"
+import { SaveActivity } from "../utils/activity-storage"
 
 interface IWorkOutContextData {
   activity: WorkoutActivity
@@ -31,7 +32,7 @@ interface IWorkOutContextData {
   PauseWorkout(): void
   ResumeWorkout(): void
   StopWorkout(): void
-  FinishWorkout(): void
+  FinishWorkout(): WorkoutActivity
   ResetWorkout(): void
 }
 
@@ -139,6 +140,8 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
 
     setActivity(prev => ({
       ...prev,
+      id: crypto.randomUUID(),
+
       startedAt: new Date(),
       finishedAt: null,
       path: [position],
@@ -183,22 +186,27 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     setWorkoutState('running')
   },[])
 
-  const FinishWorkout = useCallback(() =>  {
+  const FinishWorkout = useCallback((): WorkoutActivity =>  {
+    const totalDuration = elapsedSeconds
+    const activeDuration = activeSeconds
+
+    const finishedActivity: WorkoutActivity = {
+      ...activity,
+      finishedAt: new Date(),
+
+      totalDuration,
+      activeDuration,
+
+      averagePace: CalculatePace(activity.distance, totalDuration),
+      averageActivePace: CalculatePace(activity.distance, activeDuration)
+    }
+
+    setActivity(finishedActivity)
+    SaveActivity(finishedActivity)
     setWorkoutState('finished')
 
-    setActivity(prev => {
-      const totalDuration = elapsedSeconds
-      const activeDuration = activeSeconds
-
-      return {
-        ...prev,
-        finishedAt: new Date(),
-        totalDuration,
-        activeDuration,
-        averagePace: CalculatePace(prev.distance, totalDuration)
-      }
-    })
-  },[elapsedSeconds, activeSeconds])
+    return finishedActivity
+  },[activity, elapsedSeconds, activeSeconds])
 
   const ResetWorkout = useCallback(() =>  {
     setWorkoutState('idle')

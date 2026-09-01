@@ -1,7 +1,17 @@
+'use client'
+
+import { WorkoutActivity } from "../types/workout-activity"
+
+import { FormattedPace } from "../utils/formatter-display-data/formatted-pace"
+import { FormattedDistance } from "../utils/formatter-display-data/formatted-distance"
+
 import { ThumbsUpIcon, ExportIcon } from "@phosphor-icons/react"
 
+interface IActivityDisplay {
+  activity: WorkoutActivity
+}
 
-export function Activity() {
+export function ActivityDisplay({activity}: IActivityDisplay) {
   return(
     <div className="w-full flex flex-col gap-6 px-6">
       <div
@@ -24,19 +34,19 @@ export function Activity() {
           className="flex flex-col items-center justify-center gap-0.5"
         >
           <span className="text-sm tracking-wide">Distância</span>
-          <span className="font-bold tracking-wider">5.05 km</span>
+          <span className="font-bold tracking-wider">{FormattedDistance(activity.distance)}</span>
         </div>
         <div
           className="flex flex-col items-center justify-center gap-0.5"
         >
           <span className="text-sm tracking-wide">Ritmo</span>
-          <span className="font-bold tracking-wider">4.44 /km</span>
+          <span className="font-bold tracking-wider">{FormattedPace(activity.averageActivePace)}</span>
         </div>
         <div
           className="flex flex-col items-center justify-center gap-0.5"
         >
           <span className="text-sm tracking-wide">Tempo</span>
-          <span className="font-bold tracking-wider">22m 58s</span>
+          <span className="font-bold tracking-wider">{activity.activeDuration}</span>
         </div>
       </div>
 

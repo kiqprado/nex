@@ -11,19 +11,19 @@ export function Menu() {
       <LinkButton
         href={'/feed'}
       >
-        <HouseIcon/>
+        <HouseIcon size={26}/>
         <span>Início</span>
       </LinkButton>
       <LinkButton
         href={'/workout'}
       >
-        <RecordIcon/>
+        <RecordIcon size={26}/>
         <span>Atividade</span>
       </LinkButton>
       <LinkButton
         href={'/profile'}
       >
-        <UserCheckIcon/>
+        <UserCheckIcon size={26}/>
         <span>Perfil</span>
       </LinkButton>
     </div>

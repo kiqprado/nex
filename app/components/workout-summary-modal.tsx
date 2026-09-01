@@ -1,3 +1,7 @@
+'use client'
+
+import { useRouter } from "next/navigation"
+
 import { useWorkout } from "../hooks/use-Workout"
 
 import { FormattedDistance } from "../utils/formatter-display-data/formatted-distance"
@@ -11,11 +15,14 @@ interface IWorkoutSummaryModal {
 }
 
 export function WorkoutSummaryModal({onCloseSummaryModal}: IWorkoutSummaryModal) {
+  const router = useRouter()
+
   const {ResetWorkout, FinishWorkout, activity} = useWorkout()
 
   function HandleSaveWorkout() {
-    FinishWorkout()
+    const finishedActivity = FinishWorkout()
     onCloseSummaryModal()
+    router.push(`/activities/${finishedActivity.id}`)
   }
 
   function HandleBackToWorkout() {
