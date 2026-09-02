@@ -1,12 +1,14 @@
 'use client'
+import Link from "next/link"
 
 import { WorkoutActivity } from "@/app/types/workout-activity"
 
 import { FormattedPace } from "@/app/utils/formatter-display-data/formatted-pace"
 import { FormattedSpeed } from "@/app/utils/formatter-display-data/formatted-speed"
 import { FormattedDistance } from "@/app/utils/formatter-display-data/formatted-distance"
+import { FormattedDuration } from "../utils/formatter-display-data/formatted-duration"
 
-import { ThumbsUpIcon, ExportIcon } from "@phosphor-icons/react"
+import { ThumbsUpIcon, ExportIcon, ArrowUDownLeftIcon } from "@phosphor-icons/react"
 
 interface IActivitySummary{
   activity: WorkoutActivity
@@ -14,7 +16,15 @@ interface IActivitySummary{
 
 export function ActivitySummary({ activity }: IActivitySummary) {
   return(
-    <div className="h-svh">
+    <div className="h-svh relative">
+      <Link
+        href={'/feed'}
+        className="absolute z-10 top-2 left-2
+          px-3 py-0.5 rounded-xl
+          bg-zinc-950/70"
+      >
+        <ArrowUDownLeftIcon size={26}/>
+      </Link>
 
       <section
         className="h-[44%] w-full bg-sky-500"
@@ -59,7 +69,7 @@ export function ActivitySummary({ activity }: IActivitySummary) {
           <div className="flex flex-col items-center">
             <span className="tracking-widest">Tempo Total</span>
             <strong className="text-xl font-bold">
-              {activity.activeDuration}
+              {FormattedDuration(activity.activeDuration)}
             </strong>
           </div>
 

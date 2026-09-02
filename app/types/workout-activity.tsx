@@ -22,6 +22,7 @@ export interface WorkoutActivity {
   steps: number
 
   path: CurrentPosition[]
+  mapSnapshot: string | null
   category: WorkoutCategory | null
 }
 
@@ -47,6 +48,7 @@ export function CreateInitialWorkoutActivity(): WorkoutActivity {
     steps: 0,
 
     path: [],
+    mapSnapshot: null,
     category: null
   }
 }

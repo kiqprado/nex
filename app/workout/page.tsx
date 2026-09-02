@@ -6,6 +6,8 @@ import { useWorkout } from '@/app/hooks/use-Workout'
 import { MyMap } from '@/app/map/My-Map'
 import { MapRef } from 'react-map-gl/maplibre'
 
+import { CaptureMapSnapshot } from '../utils/capture-map-snapshot'
+
 import { WorkoutSettingsBar } from '@/app/components/workout-settings-bar'
 import { WorkoutStatsBar  } from '@/app/components/workout-stats-bar'
 import { WorkoutSummaryModal } from '@/app/components/workout-summary-modal'
@@ -27,7 +29,8 @@ export default function Activity() {
   }
 
   function HandleStopWorkout() {
-    StopWorkout()
+    const mapSnapshot = CaptureMapSnapshot(mapRef)
+    StopWorkout(mapSnapshot)
     HandleToggleWorkoutSummaryModal()
   }
 

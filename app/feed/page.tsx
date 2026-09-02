@@ -8,34 +8,32 @@ import { Menu } from "../components/menu"
 import { ActivityDisplay } from "../components/activity-display"
 
 export default function Feed() {
-  const [activity, setActivity ] = useState<WorkoutActivity | null>(null)
+  const [ activities, setActivities ] = useState<WorkoutActivity[]>([])
 
   useEffect(() => {
-    const storedActivity = localStorage.getItem('workout-activity')
+    const storedActivities = localStorage.getItem('workout-activities')
+    if(!storedActivities) return
 
-    if(!storedActivity) return
-
-    const parsedActivity: WorkoutActivity = JSON.parse(storedActivity)
-
-    setActivity(parsedActivity)
-  }, [])
+    const parsedActivities = JSON.parse(storedActivities)
+    setActivities(parsedActivities)
+  },[])
   
   return(
     <div
       className="flex flex-col justify-center gap-3 overflow-y-auto"
     >
-      { activity ? (
-        <ActivityDisplay
-          activity={activity}
-        />
+      {activities.length > 0 ? (
+        activities.slice().reverse().map(activity => (
+          <ActivityDisplay
+            key={activity.id}
+            activity={activity}
+          />
+        ))
       ) : (
-        <span 
-          className="block text-center tracking-wider"
-        >
-          Você ainda não registrou atividade.
+        <span className='block text-center tracking-widest'>
+          Você ainda não resgitrou atividades.
         </span>
       )}
-      
       <Menu/>
     </div>
   )

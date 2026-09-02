@@ -10,6 +10,8 @@ import { FormattedPace } from "../utils/formatter-display-data/formatted-pace"
 import { FormattedSpeed } from "../utils/formatter-display-data/formatted-speed"
 import { FormattedElevationGain } from "../utils/formatter-display-data/formatted-elevation-gain"
 
+import Image from "next/image"
+
 interface IWorkoutSummaryModal {
   onCloseSummaryModal: () => void
 }
@@ -41,6 +43,13 @@ export function WorkoutSummaryModal({onCloseSummaryModal}: IWorkoutSummaryModal)
           flex flex-col items-center gap-4
          rounded-lg bg-zinc-800"
       >
+        {activity.mapSnapshot && (
+          <Image
+            src={activity.mapSnapshot}
+            alt="Trajeto da atividade"
+            className="h-48 w-full rounded-xl object-cover"
+          />
+        )}
 
         <div className='text-center space-y-2'>
           <h2>Atividade Final</h2>

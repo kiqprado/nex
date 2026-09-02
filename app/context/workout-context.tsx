@@ -31,7 +31,7 @@ interface IWorkOutContextData {
   StartWorkout(): void
   PauseWorkout(): void
   ResumeWorkout(): void
-  StopWorkout(): void
+  StopWorkout(mapSnapshot: string | null): void
   FinishWorkout(): WorkoutActivity
   ResetWorkout(): void
 }
@@ -166,7 +166,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     setWorkoutState('paused')
   },[])
 
-  const StopWorkout = useCallback(() => {
+  const StopWorkout = useCallback((mapSnapshot: string | null) => {
     setWorkoutState('stopped')
 
     setActivity(prev => {
@@ -177,7 +177,8 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
         ...prev,
         totalDuration,
         activeDuration,
-        averagePace: CalculatePace(prev.distance, totalDuration)
+        averagePace: CalculatePace(prev.distance, totalDuration),
+        mapSnapshot
       }
     })
   },[elapsedSeconds, activeSeconds])

@@ -18,6 +18,7 @@ export function MyMap({ mapRef} : IMyMap) {
      <Map
       ref={mapRef}
       mapLib={maplibregl}
+      preserveDrawingBuffer
       initialViewState={InitialMapView}
       mapStyle="https://tiles.openfreemap.org/styles/liberty"
       style={{
