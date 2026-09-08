@@ -1,4 +1,4 @@
-import { WorkoutActivity } from "../types/workout-activity"
+import { Activity } from "../types/activity"
 import { WorkoutRunTime } from "../types/workout-runtime"
 
 import { FormattedDistance } from "../utils/formatter-display-data/formatted-distance"
@@ -10,7 +10,7 @@ import { FormattedStep } from "../utils/formatter-display-data/formatted-steps"
 
 
 interface IWorkoutStatsBar {
-  activity: WorkoutActivity
+  activity: Activity
   runtime: WorkoutRunTime
   activeTimer: number
 }

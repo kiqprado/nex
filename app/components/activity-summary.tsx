@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link"
 
-import { WorkoutActivity } from "@/app/types/workout-activity"
+import { Activity } from "@/app/types/activity"
 
 import { FormattedPace } from "@/app/utils/formatter-display-data/formatted-pace"
 import { FormattedSpeed } from "@/app/utils/formatter-display-data/formatted-speed"
@@ -11,7 +11,7 @@ import { FormattedDuration } from "../utils/formatter-display-data/formatted-dur
 import { ThumbsUpIcon, ExportIcon, ArrowUDownLeftIcon } from "@phosphor-icons/react"
 
 interface IActivitySummary{
-  activity: WorkoutActivity
+  activity: Activity
 }
 
 export function ActivitySummary({ activity }: IActivitySummary) {

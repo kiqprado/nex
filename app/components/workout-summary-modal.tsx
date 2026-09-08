@@ -44,11 +44,15 @@ export function WorkoutSummaryModal({onCloseSummaryModal}: IWorkoutSummaryModal)
          rounded-lg bg-zinc-800"
       >
         {activity.mapSnapshot && (
-          <Image
-            src={activity.mapSnapshot}
-            alt="Trajeto da atividade"
-            className="h-48 w-full rounded-xl object-cover"
-          />
+          <div className="relative h-48 w-full overflow-hidden rounded-xl">
+            <Image
+              src={activity.mapSnapshot}
+              alt="Trajeto da atividade"
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
         )}
 
         <div className='text-center space-y-2'>

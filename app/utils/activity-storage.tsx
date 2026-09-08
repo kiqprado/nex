@@ -1,8 +1,8 @@
-import { WorkoutActivity } from "../types/workout-activity"
+import { Activity } from "../types/activity"
 
 const ACTIVITY_STORAGE_KEY = "workout-activities"
 
-export function SaveActivity(activity: WorkoutActivity) {
+export function SaveActivity(activity: Activity) {
   const activities = GetActivities()
 
   const updateActivities = [

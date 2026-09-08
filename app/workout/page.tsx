@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react';
+import { useState, useRef } from 'react'
 
 import { useWorkout } from '@/app/hooks/use-Workout'
 
@@ -17,7 +17,7 @@ import Link from 'next/link'
 
 import { ArrowUDownLeftIcon } from '@phosphor-icons/react';
 
-export default function Activity() {
+export default function WorkoutPage() {
   const mapRef = useRef<MapRef>(null)
   const [ workoutSummaryModal, setWorkoutSummaryModal ] = useState(false)
   const { activity, workoutState, activeSeconds, elapsedSeconds, runtime, position,
@@ -29,7 +29,7 @@ export default function Activity() {
   }
 
   function HandleStopWorkout() {
-    const mapSnapshot = CaptureMapSnapshot(mapRef)
+    const mapSnapshot = CaptureMapSnapshot(mapRef, 'preview')
     StopWorkout(mapSnapshot)
     HandleToggleWorkoutSummaryModal()
   }

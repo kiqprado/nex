@@ -1,7 +1,7 @@
 import { CurrentPosition } from "./location"
 import { WorkoutCategory } from "./workout-category"
 
-export interface WorkoutActivity {
+export interface Activity {
   id: string
 
   startedAt:  Date | null
@@ -26,7 +26,7 @@ export interface WorkoutActivity {
   category: WorkoutCategory | null
 }
 
-export function CreateInitialWorkoutActivity(): WorkoutActivity {
+export function CreateInitialActivity(): Activity {
   return {
     id: '',
 

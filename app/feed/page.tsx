@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react"
 
-import { WorkoutActivity } from "../types/workout-activity"
+import { Activity } from "../types/activity"
 
 import { Menu } from "../components/menu"
 import { ActivityDisplay } from "../components/activity-display"
 
 export default function Feed() {
-  const [ activities, setActivities ] = useState<WorkoutActivity[]>([])
+  const [ activities, setActivities ] = useState<Activity[]>([])
 
   useEffect(() => {
     const storedActivities = localStorage.getItem('workout-activities')

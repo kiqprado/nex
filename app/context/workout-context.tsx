@@ -2,7 +2,7 @@
 
 import { createContext, useState, useEffect, useMemo, useCallback, type ReactNode } from "react"
 
-import { CreateInitialWorkoutActivity, WorkoutActivity } from "../types/workout-activity"
+import { CreateInitialActivity, Activity } from "../types/activity"
 import { WorkOutActivityState } from "../types/workout-state"
 import { WorkoutRunTime } from "../types/workout-runtime"
 import { WorkoutCategory } from "../types/workout-category"
@@ -20,7 +20,7 @@ import { CalculatePace } from "../utils/workout-setup/calculate-pace"
 import { SaveActivity } from "../utils/activity-storage"
 
 interface IWorkOutContextData {
-  activity: WorkoutActivity
+  activity: Activity
   workoutState: WorkOutActivityState
   elapsedSeconds: number
   activeSeconds: number
@@ -32,7 +32,7 @@ interface IWorkOutContextData {
   PauseWorkout(): void
   ResumeWorkout(): void
   StopWorkout(mapSnapshot: string | null): void
-  FinishWorkout(): WorkoutActivity
+  FinishWorkout(): Activity
   ResetWorkout(): void
 }
 
@@ -44,7 +44,7 @@ interface WorkoutProviderProps {
 
 export function WorkOutProvider({children}: WorkoutProviderProps){
   const { position, StartTracking, StopTracking } = UserLocation()
-  const [ activity, setActivity ] = useState(CreateInitialWorkoutActivity())
+  const [ activity, setActivity ] = useState(CreateInitialActivity())
   const [ workoutState, setWorkoutState ] =  useState<WorkOutActivityState>('idle')
   const [ runtime, setRuntime ] = useState<WorkoutRunTime>({currentSpeed: 0, currentPace: 0})
   const { elapsedSeconds, activeSeconds, ResetTimer} = WorkOutTimer(workoutState)
@@ -187,11 +187,11 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     setWorkoutState('running')
   },[])
 
-  const FinishWorkout = useCallback((): WorkoutActivity =>  {
+  const FinishWorkout = useCallback((): Activity =>  {
     const totalDuration = elapsedSeconds
     const activeDuration = activeSeconds
 
-    const finishedActivity: WorkoutActivity = {
+    const finishedActivity: Activity = {
       ...activity,
       finishedAt: new Date(),
 
@@ -219,7 +219,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
       currentPace: 0,
     })
 
-    setActivity(CreateInitialWorkoutActivity())
+    setActivity(CreateInitialActivity())
   }, [ResetTimer])
 
   const value = useMemo(() => ({
