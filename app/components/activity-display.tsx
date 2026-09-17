@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link"
 
-import { Activity } from "../types/activity"
+import { ActivityDisplayResponse } from "../types/activity-api"
 
 import { FormattedPace } from "../utils/formatter-display-data/formatted-pace"
 import { FormattedDistance } from "../utils/formatter-display-data/formatted-distance"
@@ -10,7 +10,7 @@ import { FormattedDuration } from "../utils/formatter-display-data/formatted-dur
 import { ThumbsUpIcon, ExportIcon } from "@phosphor-icons/react"
 
 interface IActivityDisplay {
-  activity: Activity
+  activity: ActivityDisplayResponse
 }
 
 export function ActivityDisplay({activity}: IActivityDisplay) {

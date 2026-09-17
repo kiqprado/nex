@@ -3,11 +3,11 @@
 import Map, {MapRef } from 'react-map-gl/maplibre'
 import maplibregl from 'maplibre-gl'
 
-import { UserMarker } from './User-Marker'
-import { WorkOutPath } from './WorkOut-Path'
+import { UserMarker } from '../workout/User-Marker'
+import { WorkOutPath } from '../workout/WorkOut-Path'
 import { CameraController } from './Camera-Controller'
 
-import { InitialMapView } from '../utils/initial-map-view'
+import { InitialMapView } from '../../utils/initial-map-view'
 
 interface IMyMap {
   mapRef: React.RefObject<MapRef | null>

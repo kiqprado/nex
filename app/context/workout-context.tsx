@@ -3,6 +3,7 @@
 import { createContext, useState, useEffect, useMemo, useCallback, type ReactNode } from "react"
 
 import { CreateInitialActivity, Activity } from "../types/activity"
+import { ActivityResponse } from "../types/activity-api"
 import { WorkOutActivityState } from "../types/workout-state"
 import { WorkoutRunTime } from "../types/workout-runtime"
 import { WorkoutCategory } from "../types/workout-category"
@@ -17,7 +18,8 @@ import { CalculateDistance } from "../utils/location-setup/calculate-distance"
 import { CalculateElevate } from "../utils/location-setup/calculate-elevate"
 import { CalculateSpeed } from "../utils/workout-setup/calculate-speed"
 import { CalculatePace } from "../utils/workout-setup/calculate-pace"
-import { SaveActivity } from "../utils/activity-storage"
+
+import { CreateActivity } from "../services/activities/create-activity"
 
 interface IWorkOutContextData {
   activity: Activity
@@ -32,7 +34,7 @@ interface IWorkOutContextData {
   PauseWorkout(): void
   ResumeWorkout(): void
   StopWorkout(mapSnapshot: string | null): void
-  FinishWorkout(): Activity
+  FinishWorkout(): Promise<ActivityResponse>
   ResetWorkout(): void
 }
 
@@ -187,7 +189,7 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
     setWorkoutState('running')
   },[])
 
-  const FinishWorkout = useCallback((): Activity =>  {
+  const FinishWorkout = useCallback(async (): Promise<ActivityResponse> =>  {
     const totalDuration = elapsedSeconds
     const activeDuration = activeSeconds
 
@@ -202,11 +204,12 @@ export function WorkOutProvider({children}: WorkoutProviderProps){
       averageActivePace: CalculatePace(activity.distance, activeDuration)
     }
 
+    const createdActivity =  await CreateActivity(finishedActivity)
+
     setActivity(finishedActivity)
-    SaveActivity(finishedActivity)
     setWorkoutState('finished')
 
-    return finishedActivity
+    return createdActivity
   },[activity, elapsedSeconds, activeSeconds])
 
   const ResetWorkout = useCallback(() =>  {

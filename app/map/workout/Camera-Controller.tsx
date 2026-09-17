@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from "react"
-import { useWorkout } from "../hooks/use-Workout"
+import { useWorkout } from "@/app/hooks/use-Workout"
 import { MapRef } from "react-map-gl/maplibre"
 
 interface ICameraController {

@@ -2,22 +2,42 @@
 
 import { useEffect, useState } from "react"
 
-import { Activity } from "../types/activity"
+import { ActivityDisplayResponse } from "../types/activity-api"
+
+import { GetActivities } from "../services/activities/get-activities"
 
 import { Menu } from "../components/menu"
 import { ActivityDisplay } from "../components/activity-display"
 
 export default function Feed() {
-  const [ activities, setActivities ] = useState<Activity[]>([])
+  const [ activities, setActivities ] = useState<ActivityDisplayResponse[]>([])
+  const [ loading, setLoading ] = useState(true)
 
   useEffect(() => {
-    const storedActivities = localStorage.getItem('workout-activities')
-    if(!storedActivities) return
+    async function LoadActivities() {
+      try {
+        const activites = await GetActivities()
+        setActivities(activites)
+      } catch(error) {
+        console.error(`Failed to Get Activities, ${error}`)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    const parsedActivities = JSON.parse(storedActivities)
-    setActivities(parsedActivities)
-  },[])
-  
+    LoadActivities()
+  }, [])
+
+   if(loading) {
+    return(
+      <span 
+        className="block m-auto tracking-wider text-lg"
+      >
+        Carregando as atividades...
+      </span>
+    )
+  }
+
   return(
     <div
       className="flex flex-col justify-center gap-3 overflow-y-auto"

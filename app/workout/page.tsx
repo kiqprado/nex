@@ -3,7 +3,7 @@ import { useState, useRef } from 'react'
 
 import { useWorkout } from '@/app/hooks/use-Workout'
 
-import { MyMap } from '@/app/map/My-Map'
+import { MyMap } from '@/app/map/workout/My-Map'
 import { MapRef } from 'react-map-gl/maplibre'
 
 import { CaptureMapSnapshot } from '../utils/capture-map-snapshot'

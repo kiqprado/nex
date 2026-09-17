@@ -21,10 +21,14 @@ export function WorkoutSummaryModal({onCloseSummaryModal}: IWorkoutSummaryModal)
 
   const {ResetWorkout, FinishWorkout, activity} = useWorkout()
 
-  function HandleSaveWorkout() {
-    const finishedActivity = FinishWorkout()
-    onCloseSummaryModal()
-    router.push(`/activities/${finishedActivity.id}`)
+  async function HandleSaveWorkout() {
+    try {
+      const createdActivity = await FinishWorkout()
+      onCloseSummaryModal()
+      router.push(`/activities/${createdActivity.id}`)
+    } catch(error) {
+      console.error('Failed to Save Activity', error)
+    }
   }
 
   function HandleBackToWorkout() {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useWorkout } from "../hooks/use-Workout"
+import { useWorkout } from "@/app/hooks/use-Workout"
 import { Marker } from "react-map-gl/maplibre"
 
 export function UserMarker() {

@@ -1,33 +1,51 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 
-import { Activity } from "@/app/types/activity"
+import { ActivityDetailsResponse } from "@/app/types/activity-api"
+
+import { GetActivityById } from "@/app/services/activities/get-activity-by-id"
 
 import { ActivitySummary } from "@/app/components/activity-summary"
 
-export default function ActivityPage() {
-  const params = useParams<{id: string}>()
-  const [ activity, setActivity ] = useState<Activity | null>(null)
+interface IActivityPage {
+  params: Promise<{id: string}>
+}
+
+export default function ActivityPage({ params }: IActivityPage) {
+  const { id } = use(params)
+  const [ activity, setActivity ] = useState<ActivityDetailsResponse | null>(null)
+  const [ loading, setLoading ] = useState(true)
 
   useEffect(() => {
-    const storedActivities = localStorage.getItem('workout-activities')
-    if(!storedActivities) return
-
-    const activities: Activity[] = JSON.parse(storedActivities)
-
-    const foundActivity = activities.find(activity => activity.id === params.id)
-    if(foundActivity) {
-      setActivity(foundActivity)
+    async function LoadActivity() {
+      try{
+        const activity = await GetActivityById(id)
+        setActivity(activity)
+      } catch(error) {
+        console.error('Can´t not Loading Activity', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [params.id])
+
+    LoadActivity()
+  }, [id])
+
+  if(loading) {
+    return(
+      <span className="block m-auto tracking-wider text-lg">Carregando atividade</span>
+    )
+  }
 
   if(!activity) {
     return(
-      <div>
+      <span 
+        className="block m-auto tracking-wider text-lg"
+      >
         Atividade não encontrada!
-      </div>
+      </span>
     )
   }
 

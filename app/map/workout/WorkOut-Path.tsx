@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from "react"
-import { useWorkout } from "../hooks/use-Workout"
+import { useWorkout } from "@/app/hooks/use-Workout"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 export function WorkOutPath() {
