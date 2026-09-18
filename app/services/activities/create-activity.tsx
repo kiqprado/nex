@@ -1,9 +1,9 @@
+import { API_URL } from "@/app/config/api"
+
 import { Activity } from "@/app/types/activity"
 import { ActivityResponse } from "@/app/types/activity-api"
 
 import { CreateActivityPayload } from "./create-activity-payload"
-
-const API_URL = 'http://localhost:3333'
 
 export async function CreateActivity(activity: Activity): Promise<ActivityResponse> {
   const payload = CreateActivityPayload(activity)

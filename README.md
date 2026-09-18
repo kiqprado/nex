@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# Nex
 
-## Getting Started
+Aplicação Next.js para registrar e consultar atividades físicas.
 
-First, run the development server:
+## Preparar o ambiente
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. Instale as dependências com `npm install`.
+2. Crie ou edite `.env.local` na raiz do projeto, ao lado de `package.json`:
+
+   ```dotenv
+   NEXT_PUBLIC_API_URL=http://localhost:8080
+   ```
+
+   A porta acima é um exemplo: use o endereço do seu backend. Inclua o protocolo (`http://` ou `https://`), sem `/` no final e sem o endpoint `/activities`. Se a API tiver um prefixo, inclua-o na base, por exemplo: `http://localhost:8080/api`.
+
+3. Inicie o backend separadamente. Este repositório inicia apenas o frontend.
+4. Execute `npm run dev` e abra [localhost:3000](http://localhost:3000).
+
+Após alterar a variável, reinicie o servidor de desenvolvimento. Os arquivos `.env*` são ignorados pelo Git; cada pessoa deve configurar seu ambiente local.
+
+## Configuração centralizada
+
+O arquivo [app/config/api.ts](app/config/api.ts) centraliza a leitura da URL:
+
+```ts
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+if (!API_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined")
+}
+
+export { API_URL }
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A validação acontece quando o módulo é carregado. Uma variável ausente ou vazia gera o erro acima, evitando chamadas com uma base indefinida. Atualmente, a configuração não valida o formato da URL nem remove barras finais.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O Next.js carrega os arquivos de ambiente automaticamente, sem instalar `dotenv` ou alterar `next.config.ts`. O prefixo `NEXT_PUBLIC_` disponibiliza o valor no navegador, onde as chamadas atuais são executadas. Esse valor é público: não inclua senhas, tokens ou outras credenciais na URL.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+A base centralizada permite trocar o backend por ambiente sem editar os serviços. Para novas chamadas, importe `API_URL` e acrescente somente o caminho do endpoint:
 
-## Learn More
+```ts
+import { API_URL } from "@/app/config/api"
 
-To learn more about Next.js, take a look at the following resources:
+const response = await fetch(`${API_URL}/activities`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+if (!response.ok) {
+  throw new Error(`Failed to fetch activities: ${response.status}`)
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+const activities = await response.json()
+```
 
-## Deploy on Vercel
+Mantenha as chamadas nos serviços e reutilize essas funções nas páginas e componentes, evitando repetir endereços ou leituras de `process.env`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Uso nos serviços de atividades
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Serviço | Requisição | Comportamento |
+| --- | --- | --- |
+| [GetActivities](app/services/activities/get-activities.tsx) | `GET ${API_URL}/activities` | Lista as atividades exibidas no feed. |
+| [GetActivityById](app/services/activities/get-activity-by-id.tsx) | `GET ${API_URL}/activities/${activityId}` | Busca os detalhes; retorna `null` em caso de HTTP 404. |
+| [CreateActivity](app/services/activities/create-activity.tsx) | `POST ${API_URL}/activities` | Converte a atividade com `CreateActivityPayload` e envia JSON. |
+
+Os serviços lançam erro para respostas HTTP sem sucesso, com a exceção de 404 descrita acima.
+
+## Configuração por ambiente
+
+| Ambiente | Onde definir `NEXT_PUBLIC_API_URL` |
+| --- | --- |
+| Desenvolvimento | Em `.env.local`, com o endereço do backend local. |
+| Homologação/preview | No ambiente de build do deploy, com a URL da API de homologação. |
+| Produção | No ambiente de build do deploy, com a URL pública HTTPS da API de produção. |
+
+As variáveis `NEXT_PUBLIC_*` são incorporadas ao JavaScript durante `npm run build`. Defina a URL antes do build. Para alterá-la em uma aplicação publicada, gere um novo build e faça outro deploy; mudar a variável apenas ao executar `npm run start` não atualiza a URL incorporada no navegador. Isso também vale ao reutilizar uma imagem Docker entre ambientes.
+
+Para executar uma versão de produção localmente, configure a variável e execute:
+
+```bash
+npm run build
+npm run start
+```
+
+O Next.js procura cada variável nesta ordem e usa o primeiro valor encontrado:
+
+1. Variáveis já definidas no processo (terminal, CI ou plataforma de deploy).
+2. `.env.$NODE_ENV.local`.
+3. `.env.local` (exceto em testes).
+4. `.env.$NODE_ENV`.
+5. `.env`.
+
+`npm run dev` usa `development`; build e execução de produção usam `production`. Para homologação, use as variáveis do deploy com `NODE_ENV=production`, sem criar um valor `staging` para `NODE_ENV`. Em testes com `NODE_ENV=test`, `.env.local` não é carregado.
+
+## Verificar a integração
+
+Abra `/feed` e confira, na aba **Network/Rede** das ferramentas do navegador, se a requisição para `/activities` usa a base configurada. Abra os detalhes de uma atividade existente para verificar `/activities/{id}`.
+
+| Sintoma | O que conferir |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL is not defined` | Confira o nome e o valor da variável e se `.env.local` está na raiz. Reinicie o desenvolvimento ou refaça o build do deploy. |
+| URL antiga nas requisições | Confira a prioridade das variáveis e se houve um novo build após a alteração. |
+| `Failed to fetch` ou conexão recusada | Confirme que o backend está ativo e acessível a partir do navegador. |
+| Bloqueio por CORS | Configure o backend para permitir a origem do frontend, incluindo protocolo e porta, como `http://localhost:3000`. |
+| Bloqueio por conteúdo misto | Em um frontend HTTPS, use uma API HTTPS. |
+| HTTP 404 inesperado | Confira a base, possíveis prefixos como `/api` e as rotas disponíveis no backend. |
+
+Ao acessar pelo celular ou por outro computador, `localhost` aponta para esse dispositivo. Configure uma URL da API acessível por ele, como o IP do computador na rede, e confira a exposição da porta e as origens permitidas no backend.
+
+Referência utilizada: guia da versão instalada do Next.js em `node_modules/next/dist/docs/01-app/02-guides/environment-variables.md`.

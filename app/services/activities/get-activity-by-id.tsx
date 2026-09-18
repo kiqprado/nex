@@ -1,12 +1,12 @@
-import { ActivityDetailsResponse } from "@/app/types/activity-api"
+import { API_URL } from "@/app/config/api"
 
-const API_URL = 'http://localhost:3333'
+import { ActivityDetailsResponse } from "@/app/types/activity-api"
 
 export async function GetActivityById(activityId: string): Promise<ActivityDetailsResponse> {
   const response = await fetch(`${API_URL}/activities/${activityId}`)
 
   if(response.status === 404) {
-    return null
+    throw new Error(`Activity not found ${response.status}`)
   }
   
   if(!response.ok) {
