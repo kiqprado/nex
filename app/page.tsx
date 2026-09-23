@@ -1,11 +1,11 @@
 'use client'
 
-import { Menu } from "./components/menu"
+import { LoginForm } from "./components/login-form"
 
 export default function App() {
  return (
-  <div>
-    <Menu/>
+  <div className="h-svh flex">
+    <LoginForm/>
   </div>
  )
 }

@@ -4,3 +4,33 @@
 .font-orbitron {
   font-family: var(--font-orbitron)
 }
+
+:root {
+  --nex-neon: #b7ff3c;
+  --nex-neon-glow: rgba(183, 255, 60, 0.22);
+
+  --nex-purple: #8b5cf6;
+  --nex-purple-glow: rgba(139, 92, 246, 0.28);
+}
+
+.nex-auth-input {
+  border-color: rgba(183, 255, 60, 0.55);
+
+  box-shadow:
+    0 10px 35px -15px var(--nex-purple-glow),
+    0 0 18px -10px var(--nex-purple-glow),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.nex-auth-input:hover {
+  border-color: rgba(183, 255, 60, 0.8);
+}
+
+.nex-auth-input:focus {
+  border-color: var(--nex-neon);
+
+  box-shadow:
+    0 12px 40px -14px rgba(139, 92, 246, 0.55),
+    0 0 22px -10px var(--nex-neon-glow),
+    inset 0 0 0 1px rgba(183, 255, 60, 0.08);
+}
