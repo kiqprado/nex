@@ -1,8 +1,42 @@
+import { useRouter } from "next/navigation"
+
 import Link from "next/link"
 
+import type { FormEventHandler  } from 'react'
+
+import { LoginUser } from "../services/auth/login-user"
+
 export function LoginForm() {
+  const router =  useRouter()
+
+  const HandleLoginUser: FormEventHandler<HTMLFormElement> = async event => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
+
+    const identifier = String(formData.get("indentifier") ?? "").trim()
+    const password = String(formData.get("password") ?? "")
+
+    if(!identifier || !password) {
+      return
+    }
+
+    try {
+      await LoginUser({
+        identifier,
+        password
+      })
+
+      router.replace("/feed")
+    } catch (error) {
+      console.error("Failed to Login User:", error)
+    }
+
+  }
+
   return (
      <form
+      onSubmit={HandleLoginUser}
       className="w-full m-auto max-w-md
         flex flex-col gap-7 px-6"
     >

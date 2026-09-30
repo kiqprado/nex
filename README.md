@@ -2,6 +2,25 @@
 
 Aplicação Next.js para registrar e consultar atividades físicas.
 
+## Estado atual e autenticação
+
+O projeto está em desenvolvimento. O frontend possui fluxo de treino com geolocalização, mapa e métricas, além de integração com uma API externa para salvar e consultar atividades. O backend deve ser executado separadamente.
+
+As telas de autenticação e senha estão implementadas **somente na camada visual**. Ainda não há autenticação, criação de contas, envio ou verificação de códigos, alteração de senha, gerenciamento de sessão ou proteção de rotas.
+
+| Rota | Interface disponível |
+| --- | --- |
+| `/` | Login com usuário e senha; links para cadastro e recuperação. |
+| `/register` | Cadastro com e-mail ou telefone, senha e confirmação. |
+| `/forgot-password` | Solicitação de recuperação por e-mail ou telefone. |
+| `/reset-password` | Nova senha e confirmação. |
+
+As interfaces compartilham tema escuro, tipografia Orbitron, campos com bordas verdes e sombras violetas e botões com destaque neon. Os requisitos de senha exibidos são orientações visuais; ainda não são validados pela aplicação.
+
+O componente de verificação de código de seis dígitos está criado, mas ainda não está conectado às páginas. O fluxo entre envio, verificação e redefinição permanece pendente.
+
+Para explorar as atividades, acesse `/feed` ou `/workout` diretamente após configurar o ambiente. O botão Entrar ainda não autentica nem redireciona para essas páginas. Utilize somente dados fictícios nos formulários do protótipo: a submissão HTML nativa ainda não foi substituída por um tratamento da aplicação.
+
 ## Preparar o ambiente
 
 1. Instale as dependências com `npm install`.
@@ -57,10 +76,10 @@ Mantenha as chamadas nos serviços e reutilize essas funções nas páginas e co
 | Serviço | Requisição | Comportamento |
 | --- | --- | --- |
 | [GetActivities](app/services/activities/get-activities.tsx) | `GET ${API_URL}/activities` | Lista as atividades exibidas no feed. |
-| [GetActivityById](app/services/activities/get-activity-by-id.tsx) | `GET ${API_URL}/activities/${activityId}` | Busca os detalhes; retorna `null` em caso de HTTP 404. |
+| [GetActivityById](app/services/activities/get-activity-by-id.tsx) | `GET ${API_URL}/activities/${activityId}` | Busca os detalhes; lança erro em caso de HTTP 404. |
 | [CreateActivity](app/services/activities/create-activity.tsx) | `POST ${API_URL}/activities` | Converte a atividade com `CreateActivityPayload` e envia JSON. |
 
-Os serviços lançam erro para respostas HTTP sem sucesso, com a exceção de 404 descrita acima.
+Os serviços lançam erro para respostas HTTP sem sucesso, incluindo HTTP 404. Na página de detalhes, a falha é registrada no console e a ausência de dados resulta na mensagem de atividade não encontrada.
 
 ## Configuração por ambiente
 

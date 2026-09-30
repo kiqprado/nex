@@ -10,6 +10,7 @@ export async function CreateActivity(activity: Activity): Promise<ActivityRespon
 
   const response = await fetch(`${API_URL}/activities`, {
     method: 'POST',
+    credentials: "include",
     headers: { "Content-Type": "application/json"},
     body: JSON.stringify(payload)
   })
