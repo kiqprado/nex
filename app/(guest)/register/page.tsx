@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation"
 
 import { type SubmitEventHandler } from "react"
 
-import { RegisterUser } from "../services/auth/register-user"
+import { UseAuth } from "../../hooks/use-Auth"
 
+import { RegisterUser } from "../../services/auth/register-user"
 
 export default function RegisterForm() {
   const router = useRouter()
+  const { SetUser } = UseAuth()
 
   const HandleRegisterUser: SubmitEventHandler<HTMLFormElement> = async event => {
     event.preventDefault()
@@ -31,13 +33,15 @@ export default function RegisterForm() {
     }
 
     try {
-      await RegisterUser({
+      const response = await RegisterUser({
         email: email || undefined,
         phone: phone || undefined,
         password
       })
 
-      router.push("/complete-profile")
+      SetUser(response.user)
+
+      router.replace("/complete-profile")
     } catch(error) {
       console.error("Failed To Register this user", error)
     }
@@ -53,11 +57,8 @@ export default function RegisterForm() {
         <div className="flex flex-col gap-2">
           <label
             htmlFor="email"
-            className="
-              text-sm font-medium
-              tracking-[0.15em]
-              text-zinc-300
-            "
+            className="text-sm font-medium
+              tracking-[0.15em]text-zinc-300"
           >
             E-mail
           </label>
@@ -68,22 +69,10 @@ export default function RegisterForm() {
             type="email"
             autoComplete="email"
             placeholder="voce@email.com"
-            className="
-              nex-auth-input
-              w-full
-              rounded-xl
-              border
-              bg-zinc-950/80
-              px-4 py-3.5
-
-              text-zinc-100
-              outline-none
-
-              placeholder:text-zinc-600
-
-              transition-all
-              duration-300
-            "
+            className="nex-auth-input w-full px-4 py-3.5
+              rounded-xl border bg-zinc-950/80 text-zinc-100
+              outline-none placeholder:text-zinc-600
+              transition-all duration-300"
           />
         </div>
 

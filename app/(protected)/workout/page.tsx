@@ -6,7 +6,7 @@ import { useWorkout } from '@/app/hooks/use-Workout'
 import { MyMap } from '@/app/map/workout/My-Map'
 import { MapRef } from 'react-map-gl/maplibre'
 
-import { CaptureMapSnapshot } from '../utils/capture-map-snapshot'
+import { CaptureMapSnapshot } from '@/app/utils/capture-map-snapshot'
 
 import { WorkoutSettingsBar } from '@/app/components/workout-settings-bar'
 import { WorkoutStatsBar  } from '@/app/components/workout-stats-bar'

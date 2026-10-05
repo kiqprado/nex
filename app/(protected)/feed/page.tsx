@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react"
 
-import { ActivityDisplayResponse } from "../types/activity-api"
+import { ActivityDisplayResponse } from "../../types/activity-api"
 
-import { GetActivities } from "../services/activities/get-activities"
+import { GetActivities } from "../../services/activities/get-activities"
 
-import { Menu } from "../components/menu"
-import { ActivityDisplay } from "../components/activity-display"
+import { Menu } from "../../components/menu"
+import { ActivityDisplay } from "../../components/activity-display"
 
 export default function Feed() {
   const [ activities, setActivities ] = useState<ActivityDisplayResponse[]>([])
@@ -50,9 +50,11 @@ export default function Feed() {
           />
         ))
       ) : (
-        <span className='block text-center tracking-widest'>
-          Você ainda não resgitrou atividades.
-        </span>
+        <div className="h-svh w-full flex">
+          <span className='m-auto block text-center tracking-widest'>
+            Você ainda não registrou <br/> atividades.
+          </span>
+        </div>
       )}
       <Menu/>
     </div>

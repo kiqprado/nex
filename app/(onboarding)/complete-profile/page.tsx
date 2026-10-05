@@ -1,18 +1,21 @@
 "use client"
 
-import {FormEventHandler, useState } from "react"
+import {type SubmitEventHandler, useState } from "react"
 
-import { CompleteProfile } from "../services/auth/complete-profile"
+import { UseAuth } from "../../hooks/use-Auth"
+
+import { CompleteProfile } from "../../services/auth/complete-profile"
 
 import { useRouter } from "next/navigation"
 
 export default function CompleteProfilePage() {
   const router = useRouter()
+  const { SetUser } = UseAuth()
+
   const [ error, setError ] = useState<string | null>(null)
-  
   const [ isSubmitting, setIsSubmitting ] = useState(false)
 
-  const HandleCompleteProfile: FormEventHandler<HTMLFormElement> = async event => {
+  const HandleCompleteProfile: SubmitEventHandler<HTMLFormElement> = async event => {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
@@ -28,10 +31,12 @@ export default function CompleteProfilePage() {
     setIsSubmitting(true)
 
     try {
-      await CompleteProfile({
+      const response = await CompleteProfile({
         name,
         username
       })
+
+      SetUser(response.user)
       
       router.replace("/feed")
     } catch (error) {

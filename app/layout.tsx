@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AuthProvider } from "./context/auth-context";
 import { WorkOutProvider } from '@/app/context/workout-context'
 
 import "./styles/globals.css";
@@ -31,9 +32,11 @@ export default function RootLayout({
       <body 
         className="min-h-full flex flex-col"
       >
-        <WorkOutProvider>
-          {children}
-        </WorkOutProvider>
+        <AuthProvider>
+          <WorkOutProvider>
+            {children}
+          </WorkOutProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -34,3 +34,27 @@
     0 0 22px -10px var(--nex-neon-glow),
     inset 0 0 0 1px rgba(183, 255, 60, 0.08);
 }
+
+.nex-loading-bar {
+  width: 0%;
+  box-shadow:
+    0 0 12px var(--nex-neon-glow),
+    0 0 24px var(--nex-neon-glow);
+
+  animation:
+    nex-loading 800ms ease-out forwards;
+}
+
+@keyframes nex-loading {
+  0% {
+    width: 0%;
+  }
+
+  70% {
+    width: 85%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}

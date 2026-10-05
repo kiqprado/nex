@@ -1,7 +1,6 @@
 'use client'
 
 import { use, useEffect, useState } from "react"
-import { useParams } from "next/navigation"
 
 import { ActivityDetailsResponse } from "@/app/types/activity-api"
 

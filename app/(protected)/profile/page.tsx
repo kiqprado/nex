@@ -1,20 +1,37 @@
 'use client'
 import Link from "next/link"
+import Image from "next/image"
 
-import { Menu } from "../components/menu"
+import { UseAuth } from "../../hooks/use-Auth"
 
+import { Menu } from "../../components/menu"
+
+import MaleAvatar from '../../../public/avatar-profile/male-avatar.jpg'
 import { PulseIcon, StackPlusIcon, TrophyIcon, CaretDoubleRightIcon, QrCodeIcon } from "@phosphor-icons/react"
 
 export default function Profile() {
+  const { user, loading} = UseAuth()
+
+  if(loading) {
+    return null
+  }
+
+  if(!user) {
+    return null
+  }
+
   return(
     <div className="w-full px-6 py-3 flex flex-col gap-6">
       <header className="flex flex-col gap-6">
+        <span className="block text-lg -mb-3 text-center tracking-widest">@{user.username}</span>
         <div className="flex items-center gap-6">
-          <div
-            className="h-22 w-22 rounded-full bg-cyan-500"
+          <Image
+            src={user.avatarUrl ?? MaleAvatar}
+            alt="Avatar user photo profile"
+            className="h-22 w-22 rounded-full"
           />
           <div className="flex flex-col gap-1">
-            <h2 className="tracking-wider">Kaique Prado</h2>
+            <h2 className="tracking-wider">{user.name}</h2>
             <span className="text-sm">São Paulo - SP, Brasil</span>
           </div>
         </div>

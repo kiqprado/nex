@@ -1,6 +1,8 @@
 'use client'
 import Link from "next/link"
 
+import { UseAuth } from "../hooks/use-Auth"
+
 import { ActivityDisplayResponse } from "../types/activity-api"
 
 import { FormattedPace } from "../utils/formatter-display-data/formatted-pace"
@@ -14,6 +16,16 @@ interface IActivityDisplay {
 }
 
 export function ActivityDisplay({activity}: IActivityDisplay) {
+  const { user, loading} = UseAuth()
+  
+  if(loading) {
+    return null
+  }
+  
+  if(!user) {
+    return null
+  }
+
   return(
     <div className="w-full flex flex-col gap-6 px-6">
       <Link
@@ -27,7 +39,7 @@ export function ActivityDisplay({activity}: IActivityDisplay) {
           <div
             className="flex flex-col justify-center"
           >
-            <h4>User Name</h4>
+            <h4>{user.name}</h4>
             <span className="text-xs tracking-widest">01 de Setembro ás 14:30hrs</span>
             <span className="text-xs tracking-widest">São Paulo - SP</span>
           </div>
