@@ -1,16 +1,26 @@
 'use client'
+
 import Link from "next/link"
 import Image from "next/image"
 
+import { useState, useEffect } from "react"
+
 import { UseAuth } from "../../hooks/use-Auth"
 
+import { GetActivitiesCount } from '@/app/services/activities/get-activities-count'
+
 import { Menu } from "../../components/menu"
+import { QRCodeProfile } from "../../components/qr-code-profile"
+import { LogoutButton } from "@/app/elements/button-logout"
 
 import MaleAvatar from '../../../public/avatar-profile/male-avatar.jpg'
 import { PulseIcon, StackPlusIcon, TrophyIcon, CaretDoubleRightIcon, QrCodeIcon } from "@phosphor-icons/react"
 
 export default function Profile() {
   const { user, loading} = UseAuth()
+  const [ activitiesCount, setActivitiesCount ] = useState<number | null>(null)
+  const [ loadingActivitiesCount, setLoadingActivitiesCount ] = useState(true)
+  const [ QRCodeProfileModal, setQRCodeProfileModal ] = useState(false)
 
   if(loading) {
     return null
@@ -20,8 +30,31 @@ export default function Profile() {
     return null
   }
 
+  function HandleToggleQRCodeProfileModal() {
+    setQRCodeProfileModal(prev => !prev)
+  }
+
+ useEffect(() => {
+  async function LoadActivitiesCount() {
+    try {
+      const activities = await GetActivitiesCount()
+      setActivitiesCount(activities.count)
+    } catch (error) {
+      console.error("Failed to Get Activities Count", error)
+    } finally {
+      setLoadingActivitiesCount(false)
+    }
+  }
+
+  LoadActivitiesCount()
+ }, [])
+
   return(
-    <div className="w-full px-6 py-3 flex flex-col gap-6">
+    <div 
+      className="w-full h-svh relative 
+      px-6 py-3 flex flex-col gap-6 "
+    >
+      <LogoutButton/>
       <header className="flex flex-col gap-6">
         <span className="block text-lg -mb-3 text-center tracking-widest">@{user.username}</span>
         <div className="flex items-center gap-6">
@@ -35,13 +68,13 @@ export default function Profile() {
             <span className="text-sm">São Paulo - SP, Brasil</span>
           </div>
         </div>
-        <p>Bio do usuário</p>
+        <p>{user.bio}</p>
         <div className="flex items-center justify-evenly">
           <div
             className="flex flex-col items-center"
           >
             <span className="text-sm tracking-wider">Atividades</span>
-            <span>N° Total</span>
+            <span>{loadingActivitiesCount ? "..." : activitiesCount ?? "-"}</span>
           </div>
           <div
             className="flex flex-col items-center"
@@ -52,8 +85,17 @@ export default function Profile() {
         </div>
         
         <div className="flex items-center justify-evenly">
-          <button className="flex items-center gap-3">QR Code <QrCodeIcon size={22}/></button>
-          <button>Editar Perfil</button>
+          <button 
+            onClick={HandleToggleQRCodeProfileModal}
+            className="flex items-center gap-3"
+          >
+            QR Code <QrCodeIcon size={22}/>
+          </button>
+          <Link
+            href={"/edit-profile"}
+          >
+            Editar Perfil
+          </Link>
         </div>
       </header>
       <section className="space-y-6">
@@ -106,6 +148,12 @@ export default function Profile() {
         </Link>
       </section>
       <Menu/>
+
+      {QRCodeProfileModal && (
+        <QRCodeProfile
+          HandleToggleQRCodeProfileModal={HandleToggleQRCodeProfileModal}
+        />
+      )}
     </div>  
   )
 }

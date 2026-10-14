@@ -16,8 +16,8 @@ export default function Feed() {
   useEffect(() => {
     async function LoadActivities() {
       try {
-        const activites = await GetActivities()
-        setActivities(activites)
+        const activities = await GetActivities()
+        setActivities(activities)
       } catch(error) {
         console.error(`Failed to Get Activities, ${error}`)
       } finally {

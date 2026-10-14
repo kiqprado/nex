@@ -24,11 +24,17 @@ export function AuthProvider({ children }: IAuthProvider) {
   const [ user, setUser ] = useState<AuthUserResponse | null>(null)
   const [ loading, setLoading ] = useState(true)
 
+  const profileCompleted = Boolean(
+    user?.name?.trim() && 
+    user?.username?.trim() &&
+    user?.city?.trim() &&
+    user?.state?.trim() &&
+    user?.country?.trim()
+  )
+
   function SetUser(user: AuthUserResponse | null) {
     setUser(user)
   }
-
-  const profileCompleted = Boolean(user?.name && user?.username)
 
   const RefreshUser = useCallback( async() => {
     try {

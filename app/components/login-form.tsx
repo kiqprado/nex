@@ -49,11 +49,12 @@ export function LoginForm() {
   }
 
   return (
-    <div>
+    <div
+      className="w-full m-auto max-w-md"
+    >
       <form
         onSubmit={HandleLoginUser}
-        className="w-full m-auto max-w-md
-          flex flex-col gap-7 px-6"
+        className="flex flex-col gap-7 px-6"
       >
         <div className="flex flex-col gap-2">
           <label

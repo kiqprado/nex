@@ -106,7 +106,7 @@ export function WorkoutSummaryModal({onCloseSummaryModal}: IWorkoutSummaryModal)
 
         </div>
 
-        <div className="w-full flex flex-col items-center justify-between">
+        <div className="w-full flex flex-col gap-4 items-center justify-between">
           <button
             className="w-full"
             onClick={HandleSaveWorkout}

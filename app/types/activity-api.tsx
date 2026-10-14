@@ -70,6 +70,10 @@ export interface ActivityResponse {
   updatedAt: string
 }
 
+export interface ActivitiesCountResponse {
+  count: number
+}
+
 export interface ActivityPointResponse {
   id: string
   activityId: string
