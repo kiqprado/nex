@@ -70,10 +70,6 @@ export interface ActivityResponse {
   updatedAt: string
 }
 
-export interface ActivitiesCountResponse {
-  count: number
-}
-
 export interface ActivityPointResponse {
   id: string
   activityId: string
@@ -100,6 +96,19 @@ export interface ActivitySportResponse {
 
   createdAt: string
   updatedAt: string
+}
+
+export interface ActivitiesCountResponse {
+  count: number
+}
+
+export type WeeklyActivitiesLevel = 'gold' | 'silver' | 'bronze'
+
+export interface ActivitiesStreakResponse {
+  totalActivities: number
+  activitiesThisWeek: number
+  weeklyStreak: number
+  weeklyLevel: WeeklyActivitiesLevel | null
 }
 
 export interface ActivityDetailsResponse extends ActivityResponse {

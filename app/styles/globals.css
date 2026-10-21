@@ -45,6 +45,86 @@
     nex-loading 800ms ease-out forwards;
 }
 
+
+/* Base compartilhada da chama */
+.streak-fire {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex-shrink: 0;
+  stroke-width: 2.2;
+  transition:
+    color 300ms ease,
+    filter 300ms ease,
+    transform 300ms ease;
+  animation: streak-flicker 2.4s ease-in-out infinite;
+}
+
+/* BRONZE — cobre incandescente */
+.streak-fire-bronze {
+  color: #ff8a3d;
+  filter:
+    drop-shadow(0 0 3px #ff7826)
+    drop-shadow(0 0 7px rgb(255 111 24 / 75%))
+    drop-shadow(0 0 14px rgb(220 75 15 / 40%));
+}
+
+/* PRATA — brilho branco azulado */
+.streak-fire-silver {
+  color: #e7f5ff;
+  filter:
+    drop-shadow(0 0 3px #b9e7ff)
+    drop-shadow(0 0 8px rgb(91 195 255 / 85%))
+    drop-shadow(0 0 16px rgb(59 130 246 / 45%));
+}
+
+/* OURO — dourado solar intenso */
+.streak-fire-gold {
+  color: #ffdf45;
+  filter:
+    drop-shadow(0 0 3px #fff176)
+    drop-shadow(0 0 8px rgb(255 190 0 / 90%))
+    drop-shadow(0 0 17px rgb(255 115 0 / 65%));
+  animation:
+    streak-flicker 1.8s ease-in-out infinite,
+    streak-gold-glow 2.2s ease-in-out infinite;
+}
+
+/* Movimento sutil, sem deixar a interface inquieta */
+@keyframes streak-flicker {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+/* Pulsação extra para a categoria ouro */
+@keyframes streak-gold-glow {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 3px #fff176)
+      drop-shadow(0 0 8px rgb(255 190 0 / 80%))
+      drop-shadow(0 0 14px rgb(255 115 0 / 50%));
+  }
+
+  50% {
+    filter:
+      drop-shadow(0 0 5px #fff9ae)
+      drop-shadow(0 0 12px rgb(255 210 30 / 100%))
+      drop-shadow(0 0 22px rgb(255 100 0 / 80%));
+  }
+}
+
+/* Respeita a preferência do sistema por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .streak-fire,
+  .streak-fire-gold {
+    animation: none;
+  }
+}
+
 @keyframes nex-loading {
   0% {
     width: 0%;

@@ -7,19 +7,26 @@ import { useState, useEffect } from "react"
 
 import { UseAuth } from "../../hooks/use-Auth"
 
+import { ActivitiesStreakResponse } from "@/app/types/activity-api"
+
 import { GetActivitiesCount } from '@/app/services/activities/get-activities-count'
+import { GetActivitiesStreak } from "@/app/services/activities/get-activities-streak"
 
 import { Menu } from "../../components/menu"
 import { QRCodeProfile } from "../../components/qr-code-profile"
 import { LogoutButton } from "@/app/elements/button-logout"
 
 import MaleAvatar from '../../../public/avatar-profile/male-avatar.jpg'
-import { PulseIcon, StackPlusIcon, TrophyIcon, CaretDoubleRightIcon, QrCodeIcon } from "@phosphor-icons/react"
+import { PulseIcon, StackPlusIcon, TrophyIcon, CaretDoubleRightIcon, QrCodeIcon, FireIcon } from "@phosphor-icons/react"
+
+
 
 export default function Profile() {
   const { user, loading} = UseAuth()
   const [ activitiesCount, setActivitiesCount ] = useState<number | null>(null)
   const [ loadingActivitiesCount, setLoadingActivitiesCount ] = useState(true)
+  const [ activitiesStreak, setActivitiesStreak ] = useState<ActivitiesStreakResponse | null>(null)
+  const [ loadingActivitiesStreak, setLoadingActivitiesStreak ] = useState(true)
   const [ QRCodeProfileModal, setQRCodeProfileModal ] = useState(false)
 
   if(loading) {
@@ -34,21 +41,47 @@ export default function Profile() {
     setQRCodeProfileModal(prev => !prev)
   }
 
- useEffect(() => {
-  async function LoadActivitiesCount() {
-    try {
-      const activities = await GetActivitiesCount()
-      setActivitiesCount(activities.count)
-    } catch (error) {
-      console.error("Failed to Get Activities Count", error)
-    } finally {
-      setLoadingActivitiesCount(false)
+  useEffect(() => {
+    async function LoadActivitiesCount() {
+      try {
+        const activities = await GetActivitiesCount()
+        setActivitiesCount(activities.count)
+      } catch (error) {
+        console.error("Failed to Get Activities Count", error)
+      } finally {
+        setLoadingActivitiesCount(false)
+      }
     }
-  }
 
-  LoadActivitiesCount()
- }, [])
+    LoadActivitiesCount()
+  }, [])
 
+  useEffect(() => {
+    let cancelled = false
+
+    async function LoadActivitiesStreak() {
+      try {
+        const streak = await GetActivitiesStreak()
+
+        if(!cancelled) {
+          setActivitiesStreak(streak)
+        }
+      } catch (error) {
+        console.error("Failed to Get Activities Streak", error)
+      } finally {
+        if(!cancelled) {
+          setLoadingActivitiesStreak(false)
+        }
+      }
+    }
+
+    LoadActivitiesStreak()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+ 
   return(
     <div 
       className="w-full h-svh relative 
@@ -80,7 +113,20 @@ export default function Profile() {
             className="flex flex-col items-center"
           >
             <span className="text-sm tracking-wider">Semanas ativo</span>
-            <span>N° Total</span>
+            <div
+              className="flex items-center justify-center gap-3"
+            >
+              <span>
+                <FireIcon
+                  weight="fill"
+                  size={26}
+                  className={`streak-fire font-semibold tabular-nums
+                    ${activitiesStreak?.weeklyLevel
+                    ? `streak-fire-${activitiesStreak.weeklyLevel}`: ''}`}
+                />
+              </span>
+              <span>{loadingActivitiesStreak ? "..." : activitiesStreak?.weeklyStreak ?? "-"}</span>
+            </div>
           </div>
         </div>
         
